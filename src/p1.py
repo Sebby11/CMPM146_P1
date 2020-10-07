@@ -51,7 +51,41 @@ def navigation_edges(level, cell):
              ((1,1), 1.4142135623730951),
              ... ]
     """
-    pass
+    toCheck = [
+        (cell[0]-1, cell[1]-1), #top left
+        (cell[0], cell[1]-1),   #top
+        (cell[0]+1, cell[1]-1), #top right
+        (cell[0]-1, cell[1]),   #left
+        (cell[0]+1, cell[1]),   #right
+        (cell[0]-1, cell[1]+1), #bottom left
+        (cell[0], cell[1]+1),   #bottom
+        (cell[0]+1, cell[1]+1)  #bottom right
+    ]
+    diags = [
+        (cell[0]-1, cell[1]-1), #top left
+        (cell[0]+1, cell[1]-1), #top right
+        (cell[0]-1, cell[1]+1), #bottom left
+        (cell[0]+1, cell[1]+1)  #bottom right
+    ]
+    diagFlag = False
+    nextSpaces = []
+
+    for i in toCheck:
+        if i in diags:
+            diagFlag = True
+
+        #check 8 cells around
+        if i in level['spaces']:
+            if not(diagFlag):
+                cost = (0.5 * (level['spaces'][cell])) + (0.5 * (level['spaces'][i]))
+            else:
+                cost = ((0.5 * sqrt(2)) * level['spaces'][cell]) + ((0.5 * sqrt(2)) * level['spaces'][i])
+            
+            nextSpaces.append((i, cost))
+        diagFlag = False
+
+
+    return nextSpaces
 
 
 def test_route(filename, src_waypoint, dst_waypoint):
@@ -106,8 +140,14 @@ def cost_to_all_cells(filename, src_waypoint, output_filename):
 if __name__ == '__main__':
     filename, src_waypoint, dst_waypoint = 'example.txt', 'a','e'
 
+    #TESTING navigation_edges
+    level = load_level(filename)
+    show_level(level)
+    neibs = navigation_edges(level, (2,1))
+    print("NEIGHBORS: \n" , neibs)
+
     # Use this function call to find the route between two waypoints.
-    test_route(filename, src_waypoint, dst_waypoint)
+    #test_route(filename, src_waypoint, dst_waypoint)
 
     # Use this function to calculate the cost to all reachable cells from an origin point.
-    cost_to_all_cells(filename, src_waypoint, 'my_costs.csv')
+    #cost_to_all_cells(filename, src_waypoint, 'my_costs.csv')
