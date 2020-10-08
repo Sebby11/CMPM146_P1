@@ -17,7 +17,40 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         Otherwise, return None.
 
     """
-    pass
+    priQ = [(0, initial_position)]
+
+    #came from dictionary
+    cellFrom = {initial_position:None}
+
+    #variable to keep track of cost cost so far
+    costs = {initial_position:0}
+
+    #main dijkstra's loop
+    while len(priQ) != 0:
+        #curr = (col, row)
+        curr = heappop(priQ)
+
+        if curr[1] == destination:
+            #get list of values 
+            tmp = curr[1]
+            li = [tmp]
+            #shorten by enumeration?
+            while cellFrom[tmp] != None:
+                tmp = cellFrom[tmp]
+                li.append(tmp)
+            return li
+
+        #i = ((col, row), cost)
+        for i in adj(graph, curr[1]):
+            new_cost = costs[curr[1]] + i[1]
+            if i[0] not in costs or new_cost < costs[i[0]]:
+                costs[i[0]] = new_cost
+                priority = new_cost
+                heappush(priQ, i[::-1])     #reverse so queue detects distance first (position, distance)
+                cellFrom[i[0]] = curr[1]
+            
+        
+    return None
 
 
 def dijkstras_shortest_path_to_all(initial_position, graph, adj):
@@ -141,10 +174,18 @@ if __name__ == '__main__':
     filename, src_waypoint, dst_waypoint = 'example.txt', 'a','e'
 
     #TESTING navigation_edges
+    print("********************* navigation_edges TEST *************************")
     level = load_level(filename)
     show_level(level)
-    neibs = navigation_edges(level, (2,1))
-    print("NEIGHBORS: \n" , neibs)
+    #print("Walls: \n", level['waypoints'],
+    #   "\n Spaces:\n ", level['spaces'],
+    #   "\n waypoints: \n", level['waypoints'])
+    neibs = navigation_edges(level, (3,10))
+    print("NEIGHBORS OF (2,1): \n" , neibs)
+
+    #TESTING dijkstras_shortest_path (a -> e)
+    print("\n********************* djik_short_path/test_route TEST *************************")
+    test_route(filename, "b", "e")
 
     # Use this function call to find the route between two waypoints.
     #test_route(filename, src_waypoint, dst_waypoint)
