@@ -45,8 +45,8 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
             new_cost = costs[curr[1]] + i[1]
             if i[0] not in costs or new_cost < costs[i[0]]:
                 costs[i[0]] = new_cost
-                priority = new_cost
-                heappush(priQ, i[::-1])     #reverse so queue detects distance first (position, distance)
+                heappush(priQ, i[::-1])    #reverse so queue detects distance first (position, distance)
+                print(priQ)
                 cellFrom[i[0]] = curr[1]
             
         
